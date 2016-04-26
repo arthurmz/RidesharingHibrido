@@ -1,0 +1,2 @@
+ridesharing: 
+	gcc -o ./Debug/RidesharingHibrido.exe ../src/FunctionTests.c ../src/Helper.c ../src/Hibrido.c ../src/RidesharingHibrido.c ../src/Calculations.c -I. -Wall -std=c99 -lm -g -O0

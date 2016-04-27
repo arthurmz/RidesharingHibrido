@@ -32,5 +32,6 @@ Graph *new_graph(int drivers, int riders, int total_requests);
 void print_to_file_decision_space(Population * p, Graph * g, unsigned int seed);
 void fill_array(int * array, int size);
 bool verifica_populacao(Population *p);
+int get_random_carona_position(Rota * rota);
 
 #endif /* HELPER_H_ */

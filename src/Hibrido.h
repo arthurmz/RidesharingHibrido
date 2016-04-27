@@ -132,7 +132,8 @@ void select_parents_by_rank(Fronts *frontsList, Population *parents, Population 
 void merge(Population *p1, Population *p2, Population *big_population);
 void repair(Individuo *offspring, Graph *g);
 void mutation(Individuo *ind, Graph *g, double mutationProbability);
-bool push_forward(Rota * rota, int position, double pf);
+bool push_forward(Rota * rota, int position, double pushf, bool forcar_clone);
+bool push_backward(Rota * rota, int position, double pushb, bool forcar_clone);
 void insere_carona_aleatoria_individuo(Individuo * ind);
 
 

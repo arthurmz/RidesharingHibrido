@@ -122,6 +122,22 @@ void clone_rota(Rota * rota, Rota *cloneRota){
 	}
 }
 
+/** Retorna uma posição de carona aleatória
+ * da rota informada
+ */
+inline int get_random_carona_position(Rota * rota){
+	if (rota->length < 4) return -1;
+	int positionSources[(rota->length-2)/2];
+	//Procurando as posições dos sources
+	int k = 0;
+	for (int i = 1; i < rota->length-2; i++){
+		if (rota->list[i].is_source)
+			positionSources[k++] = i;
+	}
+	int position = positionSources[rand() % (rota->length-2)/2];
+	return position;
+}
+
 /*Aloca uma nova população de tamanho max_capacity
  * Cada elemento de list é um ponteiro pra indivíduo NÃO ALOCADO*/
 Population* new_empty_population(int max_capacity){
@@ -314,6 +330,71 @@ void fill_array(int * array, int size){
 	}
 }
 
+/** Verifica se a rota está chegando no limite e aumente sua capacidade */
+void increase_capacity(Rota *rota){
+	//Aumentar a capacidade se tiver chegando no limite
+	if (rota->length == rota->capacity - 4){
+		rota->capacity += MAX_SERVICES_MALLOC_ROUTE;
+		rota->list = realloc(rota->list, rota->capacity * sizeof(Service));
+		printf("Aumentando a capacidade da rota clone\n");
+	}
+}
+
+bool verifica_individuo(Individuo * offspring){
+
+	bool valido = true;
+
+	for (int q = 0; q < offspring->size; q++) {
+		Rota *rota = &offspring->cromossomo[q];
+
+		if (rota->length > rota->capacity){
+			printf("Erro no length da rota %d\n", q);
+			return false;
+		}
+
+		int index = 0;
+		Request * rqts[100] = {0};
+		//Verifica se cada carona inserido é retirado
+		//Verifica se o carona é feito match só UMA VEZ
+		//Verifica se o carona é feito match na rota que está.
+		for (int k = 0; k < rota->length; k++){
+			Service * srv = &rota->list[k];
+
+			if (srv->is_source){
+				Service * destino = NULL;
+				for (int g = k; g < rota->length; g++){
+					if (rota->list[g].r == srv->r && !rota->list[g].is_source){
+						destino = &rota->list[g];
+						break;
+					}
+				}
+				if (destino == NULL){
+					printf("Erro na remoção de um carona ou driver da rota %d\n", q);
+					return false;
+				}
+
+				if(!srv->r->driver){
+					bool contem = false;
+					for (int r = 0; r < index; r++){
+						if (rqts[r] == srv->r){
+							contem = true;
+							break;
+						}
+					}
+					if (contem){
+						printf("Erro na rota %d, carona duplicada\n", q);
+						valido = false;
+					}
+					else{
+						rqts[index++] = srv->r;
+					}
+				}
+			}
+		}
+	}
+	return valido;
+}
+
 /** Verifica se a população é válida
  * Retorna true se a população é válida.
  *
@@ -321,60 +402,13 @@ void fill_array(int * array, int size){
 bool verifica_populacao(Population *p){
 	for (int x = 0; x < p->size; x++) {
 		Individuo * offspring = p->list[x];
-
 		if (offspring->size != g->drivers){
 			printf("Erro no tamanho do indivíduo %d\n", x);
 			return false;
 		}
-		for (int q = 0; q < offspring->size; q++) {
-			Rota *rota = &offspring->cromossomo[q];
-
-			if (rota->length > rota->capacity){
-				printf("Erro no length da rota %d\n", q);
-				return false;
-			}
-
-			int index = 0;
-			Request * rqts[100];
-			//Verifica se cada carona inserido é retirado
-			//Verifica se o carona é feito match só UMA VEZ
-			for (int k = 0; k < rota->length; k++){
-				Service * srv = &rota->list[k];
-
-				if (srv->is_source){
-					Service * destino = NULL;
-					for (int g = k; g < rota->length; g++){
-						if (rota->list[g].r == srv->r && !rota->list[g].is_source){
-							destino = &rota->list[g];
-							break;
-						}
-					}
-					if (destino == NULL){
-						printf("Erro na remoção de um carona ou driver da rota %d\n", q);
-						return false;
-					}
-
-					if(!srv->r->driver){
-						bool contem = false;
-						for (int r = 0; r < index; r++){
-							if (rqts[r] == srv->r){
-								contem = true;
-								break;
-							}
-						}
-						if (contem){
-							printf("Erro na rota %d, carona duplicada\n", q);
-							return false;
-						}
-						else{
-							rqts[index++] = srv->r;
-						}
-					}
-
-				}
-			}
+		if(!verifica_individuo(offspring))
+			return false;
 		}
-	}
 	return true;
 }
 

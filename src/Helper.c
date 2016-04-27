@@ -6,6 +6,7 @@
  */
 
 #include "Helper.h"
+#include "Calculations.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -408,7 +409,7 @@ bool verifica_populacao(Population *p){
 		}
 		if(!verifica_individuo(offspring))
 			return false;
-		}
+	}
 	return true;
 }
 

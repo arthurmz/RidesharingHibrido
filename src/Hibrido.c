@@ -325,9 +325,6 @@ int compare_rotas(const void *p, const void *q){
 	return ret;
 }
 
-
-
-
 /*Ordena a população de acordo com o objetivo 0, 1, 2, 3*/
 void sort_by_objective(Population *pop, int obj){
 	switch(obj){
@@ -345,6 +342,7 @@ void sort_by_objective(Population *pop, int obj){
 			break;
 	}
 }
+
 
 void insere_carona(Rota *rota, Request *carona, int posicao_insercao, int offset, bool is_source){
 	Service * ant = NULL;
@@ -405,6 +403,7 @@ bool insere_carona_rota(Rota *rota, Request *carona, int posicao_insercao, int o
 	return isRotaValida;
 }
 
+
 /** Remove o carona que tem source na posicção Posicao_remocao
  * Retorna o valor do offset para encontrar o destino do carona removido
  * Retorna 0 caso não seja possível fazer a remoção do carona
@@ -435,7 +434,6 @@ int desfaz_insercao_carona_rota(Rota *rota, int posicao_remocao){
 	return offset;
 }
 
-
 /*Remove a marcação de matched dos riders*/
 void clean_riders_matches(Graph *g){
 	for (int i = g->drivers; i < g->total_requests; i++){
@@ -443,13 +441,11 @@ void clean_riders_matches(Graph *g){
 	}
 }
 
-
 void evaluate_objective_functions_pop(Population* p, Graph *g){
 	for (int i = 0; i < p->size; i++){//Pra cada um dos indivíduos
 		evaluate_objective_functions(p->list[i], g);
 	}
 }
-
 
 /**Avalia as funções objetivo de um indivíduo
  * sem verificar o grafo
@@ -490,6 +486,8 @@ void evaluate_objective_functions(Individuo *idv, Graph *g){
 
 }
 
+
+
 /*Insere uma quantidade variável de caronas na rota informada
  * Utilizado na geração da população inicial, e na reparação dos indivíduos quebrados
  * IMPORTANTE: Antes de chamar, os caronas devem estar determinados.*/
@@ -519,7 +517,6 @@ void insere_carona_aleatoria_rota(Rota* rota){
 		}
 	}
 }
-
 
 /**
  * Insere caronas aleatórias para todas as caronas da rota
@@ -572,6 +569,7 @@ void crossover(Individuo * parent1, Individuo *parent2, Individuo *offspring1, I
 	}
 }
 
+
 /**
  * Repara o indivíduo, retirando todas as caronas repetidas.
  * No fim, as caronas com match são registradas no grafo
@@ -580,7 +578,7 @@ void repair(Individuo *offspring, Graph *g){
 	clean_riders_matches(g);
 	for (int i = 0; i < offspring->size; i++){//Pra cada rota do idv
 		Rota *rota = &offspring->cromossomo[i];
-
+		
 		//pra cada um dos services SOURCES na rota
 		for (int j = 1; j < rota->length-1; j++){
 			//Se é matched então algum SOURCE anterior já usou esse request
@@ -596,6 +594,7 @@ void repair(Individuo *offspring, Graph *g){
 		}
 	}
 }
+
 
 bool swap_rider(Rota * rota){
 	if (rota->length < 6) return false;
@@ -626,6 +625,7 @@ bool swap_rider(Rota * rota){
 	return false;
 
 }
+
 
 /** Transfere o carona de uma rota para outra
  *
@@ -675,6 +675,7 @@ bool transfer_rider(Rota * rotaRemover, Individuo *ind, Graph * g){
 
 	return conseguiu;
 }
+
 
 /** O bug mais difícil de descobrir:
  * get_random_int retornava qualquer coisa dentre o
@@ -818,8 +819,6 @@ bool push_backward(Rota * rota, int position, double pushb, bool forcar_clone){
 	return rotaValida;
 }
 
-
-
 void mutation(Individuo *ind, Graph *g, double mutationProbability){
 	repair(ind, g);
 	shuffle(index_array_drivers_mutation, g->drivers);
@@ -856,6 +855,7 @@ void mutation(Individuo *ind, Graph *g, double mutationProbability){
 		}
 	}
 }
+
 
 
 /*Gera uma população de filhos, usando seleção, crossover e mutação*/

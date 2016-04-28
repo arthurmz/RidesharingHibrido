@@ -83,12 +83,9 @@ bool insere_carona_rota(Rota *rota, Request *carona, int posicao_insercao, int o
 		printf("Parâmetros inválidos\n");
 		return false;
 	}
-	if (rota->id == 3 && carona->id == 368 && rota->length == 2)
-		printf("Condição especial");
 
 	clone_rota(rota, ROTA_CLONE);
 	bool isRotaValida = false;
-	double min_time = minimal_time_between_services(&rota->list[0], &rota->list[1]);
 	insere_carona(ROTA_CLONE, carona, posicao_insercao, offset, true);
 	insere_carona(ROTA_CLONE, carona, posicao_insercao+offset, 0, false);
 
@@ -120,21 +117,22 @@ void insere_carona_aleatoria_rota(Rota* rota){
 	for (int l = 0; l < qtd_caronas_inserir; l++){
 		index_array_caronas_inserir[l] = l;
 	}
+	
 	shuffle(index_array_caronas_inserir, qtd_caronas_inserir);
 
 	for (int z = 0; z < qtd_caronas_inserir; z++){
 		int p = index_array_caronas_inserir[z];
 		Request * carona = request->matchable_riders_list[p];
-		int posicao_inicial = get_random_int(1, rota->length-1);
 		if (!carona->matched){
+			int posicao_inicial = get_random_int(1, rota->length-1);
 			for (int offset = 1; offset <= rota->length - posicao_inicial; offset++){
-				//Situação antes de inserir
 				bool inseriu = insere_carona_rota(rota, carona, posicao_inicial, offset, true);
 				if(inseriu) break;
 			}
 		}
 	}
 }
+
 
 /** Remove o carona que tem source na posicção Posicao_remocao
  * Retorna o valor do offset para encontrar o destino do carona removido

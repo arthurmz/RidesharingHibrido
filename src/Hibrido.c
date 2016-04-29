@@ -359,12 +359,12 @@ bool transfer_rider(Rota * rotaRemover, Individuo *ind, Graph * g){
 	int k = rand() % caronaInserir->matchable_riders;
 	rotaInserir = &ind->cromossomo[caronaInserir->matchable_riders_list[k]->id];
 
+	//Troca a rota, se a escolhida aleatoriamente foi a própria rotaRemover
 	if (rotaInserir == rotaRemover){
 		if (k < caronaInserir->matchable_riders-1)
 			k++;
 		else
 			k = 0;
-
 		rotaInserir = &ind->cromossomo[caronaInserir->matchable_riders_list[k]->id];
 	}
 
@@ -474,7 +474,6 @@ bool swap_rider(Rota * rota){
 	return false;
 
 }
-
 
 /**
  * Repara o indivíduo, retirando todas as caronas repetidas.

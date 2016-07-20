@@ -68,6 +68,7 @@ typedef struct Individuo{
 	//Cada Service é uma coleta ou entrega(tanto de motorista como de carona)
 	Rota * cromossomo;
 	int size;//tamanho da lista de rotas
+	double objetivos_bruto[4];//Objetivos não normalizados. (valores reais)
 	double objetivos[4];
 
 	int dominated_by_count;//Número de soluções que dominam ind
@@ -110,10 +111,10 @@ typedef struct Graph{
 
 
 void malloc_rota_clone();
-void insere_carona_aleatoria_individuo(Individuo * ind);
+void insere_carona_aleatoria_individuo(Individuo * ind, bool full_search);
 void insere_carona(Rota *rota, Request *carona, int posicao_insercao, int offset, bool is_source);
 bool insere_carona_rota(Rota *rota, Request *carona, int posicao_insercao, int offset, bool inserir_de_fato);
-void insere_carona_aleatoria_rota(Rota* rota);
+bool insere_carona_aleatoria_rota(Rota* rota, bool full_search);
 int desfaz_insercao_carona_rota(Rota *rota, int posicao_insercao);
 void clean_riders_matches(Graph *g);
 void evaluate_objective_functions(Individuo *idv, Graph *g);
@@ -153,6 +154,8 @@ int * index_array_drivers;
 int * index_array_drivers_transfer_rider;
 int * index_array_drivers_mutation;
 int * index_array_caronas_inserir;
+int * index_array_posicao_inicial;
+int * index_array_offset;
 
 
 Request ** index_array_rotas;//Array com os índices ordenados das rotas, da menor pra maior qtd de matchable_riders

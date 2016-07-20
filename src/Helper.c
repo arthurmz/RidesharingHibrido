@@ -72,8 +72,9 @@ Individuo * generate_random_individuo(Graph *g, bool insereCaronasAleatorias){
 		rota->length = 2;
 	}
 
-	if (insereCaronasAleatorias)
-		insere_carona_aleatoria_individuo(idv);
+	if (insereCaronasAleatorias){
+		insere_carona_aleatoria_individuo(idv, true);
+	}
 
 	return idv;
 }
@@ -254,6 +255,25 @@ void shuffle(int *array, int n) {
     }
 }
 
+//Preenche o vetor com 1,2,3.. até n
+//first: valor do primeiro elemento
+void fill(int *array, int first, int n){
+	for (int i = 0; i < n; i++){
+		array[i] = first + i;
+	}
+}
+
+//Preenche o vetor com 1,2,3.. e então aleatoriza a ordem até n
+//first: valor do primeiro elemento
+void fill_shuffle(int *array, int first, int n){
+	for (int i = 0; i < n; i++){
+		array[i] = first + i;
+	}
+	shuffle(array, n);
+}
+
+
+
 
 /*Desaloca a população, desalocando também os indivíduos*/
 void dealoc_full_population(Population *population){
@@ -287,9 +307,10 @@ void dealoc_fronts(Fronts * front){
 
 
 void print(Population *p){
+	printf("Vehicles' distance | Vehicles' time | Riders' time | Riders Unmatched\n");
 	for (int i = 0; i < p->size; i++){
 		Individuo *id = p->list[i];
-		printf("%f %f %f %f\n",id->objetivos[0], id->objetivos[1], id->objetivos[2], id->objetivos[3]);
+		printf("%f %f %f %f\n",id->objetivos_bruto[0], id->objetivos_bruto[1], id->objetivos_bruto[2], id->objetivos_bruto[3]);
 	}
 }
 
@@ -330,13 +351,6 @@ void print_to_file_decision_space(Population * p, Graph * g, unsigned int seed){
 	}
 
 	fclose(fp);
-}
-
-/**Preenche o array sequencialmente*/
-void fill_array(int * array, int size){
-	for (int i = 0; i < size; i++){
-		array[i] = i;
-	}
 }
 
 /** Verifica se a rota está chegando no limite e aumente sua capacidade */

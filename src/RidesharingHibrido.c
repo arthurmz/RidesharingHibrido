@@ -91,7 +91,6 @@ int main(int argc,  char** argv){
 		if (PRINT_ALL_GENERATIONS){
 			print(children);
 		}
-
 		i++;
 	}
 	
@@ -164,6 +163,7 @@ void setup_matchable_riders(Graph * g){
 	//Ordenando o array de indices das rotas (por matchable_riders)
 	qsort(index_array_rotas, g->drivers, sizeof(Request*), compare_rotas );
 }
+
 
 /*
  * Avalia os limites superiores e inferiores de:

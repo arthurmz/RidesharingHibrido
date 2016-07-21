@@ -74,7 +74,7 @@ void insere_carona(Rota *rota, Request *carona, int posicao_insercao, int offset
 	PF = nextTime - next->service_time;
 	rota->length++;//Deve aumentar o tamanho antes de fazer o PF
 	if (PF > 0) {
-		push_forward(rota, posicao_insercao+1, PF, true);
+		push_forward_hard(rota, posicao_insercao+1, PF);
 	}
 }
 
@@ -667,37 +667,36 @@ void repair(Individuo *offspring, Graph *g){
 	}
 }
 
-
 void mutation(Individuo *ind, Graph *g, double mutationProbability){
 	repair(ind, g);
-	shuffle(index_array_drivers_mutation, g->drivers);
+	//shuffle(index_array_drivers_mutation, g->drivers);
 
 	for (int r = 0; r < ind->size; r++){
 		double accept = (double)rand() / RAND_MAX;
 		if (accept < mutationProbability){
-			int k = index_array_drivers_mutation[r];
-			Rota * rota  = &ind->cromossomo[k];
+			//int k = index_array_drivers_mutation[r];
+			Rota * rota  = &ind->cromossomo[r];
 
 			int op = rand() % 5;
 			switch(op){
 				case (0):{
-					push_backward(rota, -1, -1, false);
-					break;
-				}
-				case (1):{
-					push_forward(rota, -1, -1, false);
-					break;
-				}
-				case (2):{
 					remove_insert(rota);
 					break;
 				}
-				case (3):{
+				case (1):{
 					transfer_rider(rota,ind, g);
 					break;
 				}
-				case (4):{
+				case (2):{
 					swap_rider(rota);
+					break;
+				}
+				case (3):{
+					push_backward_mutation_op(rota,-1);
+					break;
+				}
+				case (4):{
+					push_forward_mutation_op(rota);
 					break;
 				}
 			}
